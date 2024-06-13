@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function App({ Component, pageProps }) {
   return (
     <main
-      className={`flex bg-black text-white min-h-screen flex-col items-center ${inter.className}`}
+      className={`flex py-4 bg-black text-white min-h-screen flex-col items-center ${inter.className}`}
     >
       <Component {...pageProps} />
     </main>
