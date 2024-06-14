@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Row, Col, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { registerUserApi } from "@/lib";
 
 export default function Register() {
   const { register, handleSubmit } = useForm();
@@ -31,8 +32,19 @@ export default function Register() {
     if (data["Password"] != data["Confirm Password"])
       return alert("The passwords does not match.");
 
+    // Prepare data for backend.
+    const userData = {
+      firstName: data["First Name"],
+      lastName: data["Last Name"],
+      username: data["Username"],
+      email: data["Email"],
+      password: data["Password"],
+    };
+
     try {
       // Call the API function to register the new user.
+      await registerUserApi(userData);
+
       // Upon successful response, redirect the user to the dashboard.
       router.push("/dashboard");
     } catch (error) {
