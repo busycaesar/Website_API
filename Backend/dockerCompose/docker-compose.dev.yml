@@ -1,0 +1,27 @@
+services:
+  auth-api:
+    image: busycaesar/auth-api:1.0.0
+    environment:
+      - DB_USER=db_user
+      - DB_HOST=db
+      - DB_NAME=db_website-api
+      - DB_PASSWORD=db_1234
+    ports:
+      - "7000:7000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_1234
+      POSTGRES_DB: db_website-api
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_website-api:/var/lib/postgresql/data
+
+volumes:
+  postgres_website-api:
