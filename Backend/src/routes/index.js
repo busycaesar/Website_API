@@ -2,17 +2,20 @@ const express = require("express");
 const router = express.Router();
 const response = require("./response");
 const info = require("../../package.json");
+const { dbHealthCheck } = require("../db");
 
 router.use("/api", require("./api"));
 
 // GET Routes.
 router.get("/", async (req, res) => {
   try {
-    console.log("Backend Health Check", info.version);
+    console.log("Backend Health Check");
+    const dbHealth = await dbHealthCheck();
     res.setHeader("Cache-Control", "no-cache");
     res.status(200).json(
       response(true, "Healthy", {
         Version: info.version,
+        DB: dbHealth,
       })
     );
   } catch (error) {
