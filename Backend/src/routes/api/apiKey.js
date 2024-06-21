@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const response = require("../response");
 const { getUserInfo, getUserAPIKeys, updateUserAPIKeys } = require("../../db");
+const { matchUserIdWithToken } = require("../../jwt");
 
 // Get all the API Keys of the user.
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", matchUserIdWithToken, async (req, res) => {
   // Get the id of the user.
   const { userId } = req.params;
 
