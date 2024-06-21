@@ -1,4 +1,4 @@
-# Website API (In Dev.)
+# Website APIs (In Dev.)
 
 ## Description
 
