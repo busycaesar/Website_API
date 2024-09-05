@@ -5,7 +5,7 @@ const { getUserInfo, getUserAPIKeys, updateUserAPIKeys } = require("../../db");
 const { matchUserIdWithToken } = require("../../jwt");
 
 // Get all the API Keys of the user.
-router.get("/:userId", matchUserIdWithToken, async (req, res) => {
+router.get("/:userId", async (req, res) => {
   // Get the id of the user.
   const { userId } = req.params;
 
@@ -77,7 +77,12 @@ router.patch("/:userId", async (req, res) => {
     // Try to get all the API Keys of the user.
     await updateUserAPIKeys(userId, github, linkedin, youtube, devto);
 
-    res.status(201).json(response(true, `The API key/s are updated.`));
+    // Get the updated API Keys of the user.
+    const updateAPIKeys = await getUserAPIKeys(userId);
+
+    res
+      .status(201)
+      .json(response(true, `The API key/s are updated.`, updateAPIKeys));
   } catch (error) {
     res
       .status(500)

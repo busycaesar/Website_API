@@ -160,6 +160,32 @@ const getUserAPIKeys = (userId) => {
   });
 };
 
+const getUserId = (username) => {
+  return new Promise((resolve, reject) => {
+    const getUserIdQuery = `SELECT id
+                            FROM "user"
+                            WHERE username = $1;`;
+
+    pool
+      .query(getUserIdQuery, [username])
+      .then((result) => {
+        if (!result.rowCount)
+          reject(new Error(`No user found with ${username}.`));
+
+        const { id } = result.rows[0];
+        resolve(id);
+      })
+      .catch((error) =>
+        reject(
+          new Error(
+            `Database error while getting the user id for ${username}.`,
+            error
+          )
+        )
+      );
+  });
+};
+
 const updateUserAPIKeys = (userId, github, linkedin, youtube, devto) => {
   return new Promise((resolve, reject) => {
     const updateUserAPIKeysQuery = `
@@ -253,4 +279,5 @@ module.exports = {
   cleanTable,
   updateUserAPIKeys,
   addUniqueUserAPIKey,
+  getUserId,
 };

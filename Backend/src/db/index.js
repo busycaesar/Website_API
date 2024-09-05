@@ -11,6 +11,7 @@ const {
   getUserAPIKeys,
   updateUserAPIKeys,
   addUniqueUserAPIKey,
+  getUserId,
 } = require("./dbQueries");
 
 module.exports = {
@@ -26,4 +27,5 @@ module.exports = {
   getUserAPIKeys,
   updateUserAPIKeys,
   addUniqueUserAPIKey,
+  getUserId,
 };

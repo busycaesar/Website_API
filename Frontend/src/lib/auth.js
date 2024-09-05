@@ -1,3 +1,5 @@
+import { setJWT } from "./jwt";
+
 export const registerUserApi = async (userData) => {
   try {
     const response = await fetch(
@@ -9,11 +11,11 @@ export const registerUserApi = async (userData) => {
       }
     );
 
-    const { ok, message } = await response.json();
-
-    console.log(message);
+    const { ok, message, body } = await response.json();
 
     if (!ok) throw new Error(message);
+
+    setJWT(body);
   } catch (error) {
     console.log(error.message);
     throw new Error(error.message);
@@ -31,11 +33,11 @@ export const validateUserApi = async (userData) => {
       }
     );
 
-    const { ok, message } = await response.json();
-
-    console.log(message);
+    const { ok, message, body } = await response.json();
 
     if (!ok) throw new Error(message);
+
+    setJWT(body);
   } catch (error) {
     console.log(error.message);
     throw new Error(error.message);

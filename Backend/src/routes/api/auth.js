@@ -2,8 +2,14 @@ const express = require("express");
 const router = express.Router();
 const response = require("../response");
 require("dotenv").config();
-const { addNewUser, addUserAPIKeys, addUniqueUserAPIKey } = require("../../db");
+const {
+  addNewUser,
+  addUserAPIKeys,
+  addUniqueUserAPIKey,
+  getUserId,
+} = require("../../db");
 const { generateApiKey } = require("../../apiKeyGenerator");
+//const { generateJWTToken } = require("../../jwt");
 
 router.post("/register-user", async (req, res) => {
   // Get all the data from the request header.
@@ -28,7 +34,13 @@ router.post("/register-user", async (req, res) => {
 
   try {
     // Try to store the user's information along with the user's unique id.
-    const userId = await addNewUser(firstName, lastName, username, email, body);
+    const userId = await addNewUser(
+      firstName,
+      lastName,
+      username,
+      email,
+      body.userId
+    );
 
     // Generate unique API Key for the new user.
     const uniqueAPIKey = generateApiKey();
@@ -39,11 +51,11 @@ router.post("/register-user", async (req, res) => {
     // Create the API Keys row for the new user.
     await addUserAPIKeys(userId);
 
-    res
-      .status(201)
-      .json(
-        response(true, `${username} is registered successfully.`, { userId })
-      );
+    res.status(201).json(
+      response(true, `${username} is registered successfully.`, {
+        jwt: body.jwt,
+      })
+    );
   } catch (error) {
     res
       .status(500)
@@ -66,15 +78,35 @@ router.post("/validate-user", async (req, res) => {
     body: JSON.stringify({ username: username, password: password }),
   });
 
-  result = await result.json();
+  const { ok, body } = await result.json();
 
-  if (!result.ok) return res.status(400).json(response(false, result.message));
+  if (!ok) return res.status(400).json(response(false, result.message));
 
   console.log(`Validate the registered user, ${username}.`);
 
-  res
-    .status(200)
-    .json(response(true, `${username} is validated successfully.`));
+  try {
+    // Get user id of the user.
+    const userId = await getUserId(username);
+
+    if (!userId)
+      return res
+        .status(500)
+        .json(
+          response(false, `Error while getting the user id for ${username}.`)
+        );
+
+    res
+      .status(200)
+      .json(
+        response(true, `${username} is validated successfully.`, {
+          jwt: body.jwt,
+        })
+      );
+  } catch (error) {
+    res
+      .status(500)
+      .json(response(false, `Error while validating the user. ${error}`));
+  }
 });
 
 module.exports = router;
