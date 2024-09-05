@@ -1,4 +1,4 @@
-# Website API (In Dev.)
+# Website APIs (In Dev.)
 
 ## Description
 
@@ -17,7 +17,7 @@ This project aims to streamline content management for developers, reducing the 
 
 ## List of APIs
 
-[API Documentation]()
+[API Documentation](https://github.com/busycaesar/Website_API/blob/Master/api.md)
 
 ## Author
 
